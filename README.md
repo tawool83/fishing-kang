@@ -36,6 +36,23 @@ pnpm build         # dist/ 빌드 — 현재 gzip 33.9KB (JS 28.9 + CSS 5.0)
 pnpm test:e2e      # L2+L3 — wrangler dev + Chromium (28건)
 ```
 
+## 배포
+
+```bash
+pnpm build && npx wrangler deploy
+```
+
+정적 자산 · API · Durable Object가 **한 번에** 올라간다. 별도 서버나 DB는 없다.
+
+- 빌드가 **끝난 뒤** deploy 해야 한다. 한 명령으로 묶어 백그라운드에 보내면
+  wrangler가 빌드 중인 `dist/`를 읽는다 (docs/NEXT.md §0의 주의사항 1번과 같은 함정).
+- 도메인은 `wrangler.toml`의 `[[routes]]`에서 `fish.allegru.dev`로 잡혀 있다.
+  첫 배포 때 DNS 레코드와 인증서가 자동 생성되며, 활성화까지 몇 분 걸린다.
+  도메인 없이 쓰려면 이 블록과 `[vars]`의 `APP_ORIGIN`을 **둘 다** 지운다 —
+  `APP_ORIGIN`만 남으면 공유 링크가 존재하지 않는 주소를 가리킨다.
+- 로그는 `npx wrangler tail`, 문제가 생기면 `npx wrangler rollback`.
+  단 DO 마이그레이션(`v1`)은 롤백되지 않는다.
+
 ## 아키텍처
 
 Clean Architecture 4레이어. 의존성은 안쪽으로만 흐른다.
