@@ -46,7 +46,8 @@ pnpm build && npx wrangler dev --port 8787
 ## 1. 우선 수정 — 통계 화면 레이아웃 (신규 발견)
 
 실제 화면을 캡처해 보고 발견했다. 테스트는 "요소가 존재하는가"만 보므로 잡히지 않았다.
-`.screens/11-stats.png` 참고 (gitignore 대상이라 저장소엔 없음. `docs/NEXT.md` §4 방법으로 재생성).
+캡처는 [`screenshots/`](screenshots/)에 있다 — 문제가 보이는 화면은
+[`screenshots/11-stats.png`](screenshots/11-stats.png).
 
 ### 1-1. 포디움이 두 번 나온다 ⚠️ 가장 눈에 띔
 
@@ -172,8 +173,9 @@ Design §5.4 ⑥은 "역전 드라마 확인용"이라고만 적어 축을 요�
 
 ## 4. 화면 캡처 재생성
 
-`.screens/`는 gitignore 대상이다. 다시 만들려면 `tests/e2e/` 에 임시 spec을 두고 실행한다.
-(이 세션에서 쓴 스크립트는 커밋하지 않았다 — 필요하면 아래 골자로 다시 작성)
+현재 캡처는 [`screenshots/`](screenshots/)에 커밋돼 있다(12장 + 설명).
+코드를 고친 뒤 갱신하려면 `tests/e2e/`에 임시 spec을 두고 실행한다.
+(캡처 스크립트 자체는 커밋하지 않았다 — 아래 골자로 다시 작성)
 
 ```ts
 // tests/e2e/shots.spec.ts (임시)

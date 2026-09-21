@@ -17,6 +17,9 @@
 |---|---|
 | Plan | [docs/01-plan/features/gangtaegong.plan.md](docs/01-plan/features/gangtaegong.plan.md) |
 | Design | [docs/02-design/features/gangtaegong.design.md](docs/02-design/features/gangtaegong.design.md) |
+| 갭 분석 | [docs/03-analysis/gangtaegong.analysis.md](docs/03-analysis/gangtaegong.analysis.md) |
+| **화면 캡처** | [docs/screenshots/](docs/screenshots/) — 실제 동작 화면 12장 |
+| 이어서 할 일 | [docs/NEXT.md](docs/NEXT.md) |
 | 기획 원문 | [Notion](https://app.notion.com/p/3e27ef63522980f59b02dfca3777acc5) |
 | 디자인 초안 | [Notion](https://app.notion.com/p/3e27ef63522981eea087d92787e3b89b) · [캔버스](https://claude.ai/artifact/4acajiyND8wRCmFfMCmbtk) |
 
