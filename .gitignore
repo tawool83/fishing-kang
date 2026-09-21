@@ -15,3 +15,6 @@ playwright-report/
 # bkit 세션 산출물 (PDCA 상태만 추적)
 .bkit/audit/
 .bkit/runtime/
+
+# 로컬 화면 캡처
+.screens/
