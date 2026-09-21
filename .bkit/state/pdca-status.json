@@ -1,0 +1,125 @@
+{
+  "version": "3.0",
+  "lastUpdated": "2026-09-21T09:30:00.000Z",
+  "activeFeatures": [
+    "gangtaegong"
+  ],
+  "primaryFeature": "gangtaegong",
+  "features": {
+    "gangtaegong": {
+      "phase": "check",
+      "completedModules": [
+        "module-1",
+        "module-2",
+        "module-3",
+        "module-4",
+        "module-5"
+      ],
+      "nextModule": null,
+      "startedAt": "2026-09-21T04:40:00.000Z",
+      "matchRate": 97.0,
+      "iterationCount": 1,
+      "architectureOption": "B (Clean Architecture)",
+      "documents": {
+        "plan": "docs/01-plan/features/gangtaegong.plan.md",
+        "design": "docs/02-design/features/gangtaegong.design.md",
+        "analysis": "docs/03-analysis/gangtaegong.analysis.md"
+      },
+      "references": {
+        "notionPlan": "https://app.notion.com/p/3e27ef63522980f59b02dfca3777acc5",
+        "notionDesign": "https://app.notion.com/p/3e27ef63522981eea087d92787e3b89b",
+        "designCanvas": "https://claude.ai/artifact/4acajiyND8wRCmFfMCmbtk"
+      },
+      "doCompleted": true,
+      "gaps": {
+        "critical": 0,
+        "important": 8,
+        "minor": 17
+      }
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-09-21T04:19:36.869Z",
+    "onboardingCompleted": false,
+    "lastActivity": "2026-09-21T04:40:00.000Z"
+  },
+  "history": [
+    {
+      "at": "2026-09-21T04:40:00.000Z",
+      "feature": "gangtaegong",
+      "event": "plan_created",
+      "detail": "Notion 기획서 v0.1 + 디자인 초안 v0.2 기반 Plan 문서 생성, 오픈 이슈 4건 확정"
+    },
+    {
+      "at": "2026-09-21T05:05:00.000Z",
+      "feature": "gangtaegong",
+      "event": "design_created",
+      "detail": "Option B(Clean Architecture) 선택. 미설계 화면 4종(방 정보 시트/전체 순위 펼침/어종 추가 시트/연결 상태) 명세 추가, L0 도메인 테스트 계층 신설"
+    },
+    {
+      "at": "2026-09-21T05:55:00.000Z",
+      "feature": "gangtaegong",
+      "event": "do_module_1_completed",
+      "detail": "스캐폴딩(pnpm/Vite/Preact/Vitest/ESLint 레이어규칙) + domain 전체 14파일 + L0 테스트 66건 통과. typecheck/lint 0, 커버리지 라인 97.9%/브랜치 91.7%"
+    },
+    {
+      "at": "2026-09-21T06:50:00.000Z",
+      "feature": "gangtaegong",
+      "event": "do_module_2_completed",
+      "detail": "Port 7 + UseCase 15 + SqliteRoomRepository + DO(WS Hibernation, TTL alarm) + HTTP 라우터. 테스트 142건 통과(L0 106 / L1 36). 동등성 검증이 listSpecies 정렬 불일치를 잡아 Port에 정렬 계약 추가. ESLint 레이어 규칙이 seed.ts 위치 위반을 잡아 presentation으로 이동."
+    },
+    {
+      "at": "2026-09-21T07:20:00.000Z",
+      "feature": "gangtaegong",
+      "event": "do_module_3_completed",
+      "detail": "클라이언트 인프라 9 + 화면 ①②③ + 공통 컴포넌트. 테스트 179건 통과(L0 143/L1 36), 빌드 gzip JS 15.3KB(예산 150KB), 커버리지 85.6%. applyMessage를 Application으로 추출해 클라·서버 분기 단일화. toRoomState의 normalized 버그 수정. QR은 보류(설계 대비 갭)."
+    },
+    {
+      "at": "2026-09-21T07:55:00.000Z",
+      "feature": "gangtaegong",
+      "event": "do_module_4_completed",
+      "detail": "화면 ④⑤⑦⑧⑨⑩ + 쿨다운 UI + 스낵바 + RoomSession 배선. 테스트 196건(L0 143/L1 36/L2 17) 전부 통과. L2가 구현 결함 3건 발견: 순위를 로컬 이벤트로만 파생(서버 ranking 미반영), update.changedCards 무시, proxied 수신 시 이벤트 부재. 서버 순위+미전송 델타 병합 + 자가치유 스냅샷 재요청으로 수정. 빌드 gzip 30.6KB."
+    },
+    {
+      "at": "2026-09-21T08:20:00.000Z",
+      "feature": "gangtaegong",
+      "event": "do_module_5_completed",
+      "detail": "통계 ⑥(차트 5종+하이라이트 7종) + PWA(manifest/sw) + TTL L1 5건 + L3 E2E 11건. 테스트 212건 전부 통과(L0 143/L1 41/L2 17/L3 11). L3가 설계 미구현 발견: navigator.onLine 미구독으로 반열림 소켓이 '연결됨'으로 보임 → NetworkMonitor 추가. 오프라인 대기열 시나리오 통과(유실 0/중복 0). 빌드 gzip 33.9KB."
+    },
+    {
+      "at": "2026-09-21T08:45:00.000Z",
+      "feature": "gangtaegong",
+      "event": "check_completed",
+      "detail": "Match Rate 93.6% (S95/F88/C92/R98). 갭 30건(Critical 3/Important 10/Minor 17). 런타임 212건 전량 통과. Decision Record 9/9 준수. Plan DoD 4/8 — FR-01~30 전부 구현 미충족. 수정 범위: C1 FLIP, C2 FR-08 배선, I1 접속점, I2 기기수, I4 공동순위 가시화 + 설계문서 갱신"
+    },
+    {
+      "at": "2026-09-21T09:30:00.000Z",
+      "feature": "gangtaegong",
+      "event": "act_iteration_1",
+      "detail": "Critical 3(FLIP/FR-08 배선/DoD) + Important 2(접속점/기기수) + I4 공동순위 수정. 수정 중 추가 결함 발견: 새 접속 시 브로드캐스트 없어 초록 점 미갱신 → update.onlineMemberIds 신설. 설계문서 v0.2 갱신. 테스트 219건 통과. Match Rate 93.6% → 97.0%"
+    }
+  ],
+  "stateMachine": {
+    "defaultWorkflow": "default",
+    "activeWorkflows": {
+      "gangtaegong": "check"
+    },
+    "totalTransitions": 9
+  },
+  "automation": {
+    "globalLevel": 2,
+    "trustScore": 40,
+    "pendingApprovals": 0,
+    "lastGateResult": null
+  },
+  "team": {
+    "enabled": true,
+    "stateFile": ".bkit/runtime/agent-state.json",
+    "eventsFile": ".bkit/runtime/agent-events.jsonl"
+  }
+}

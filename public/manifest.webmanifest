@@ -1,0 +1,26 @@
+{
+  "name": "강태공",
+  "short_name": "강태공",
+  "description": "지인끼리 낚시 조과를 실시간으로 기록하고 겨루는 웹",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F2E7",
+  "theme_color": "#9ED9F0",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r);
+  font-size: 14px;
+}
+
+.banner--info {
+  background: #fff;
+  border: 2px solid var(--sea);
+  color: var(--ink);
+}
+
+.banner--warn {
+  background: var(--proxy-bg);
+  border: 2px solid var(--proxy-banner);
+  color: var(--proxy-banner);
+}
+
+.banner__text {
+  margin: 0;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.banner__action {
+  flex: 0 0 auto;
+  min-height: var(--tap-min);
+  padding: 0 var(--sp-3);
+  border: 0;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.banner__action:focus-visible {
+  outline: 3px solid var(--sea-3);
+  outline-offset: 2px;
+}

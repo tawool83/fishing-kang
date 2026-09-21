@@ -1,0 +1,102 @@
+.board__header {
+  position: sticky;
+  top: 0;
+  z-index: 25;
+  background: var(--sky);
+  padding: calc(var(--sp-3) + env(safe-area-inset-top)) var(--gutter) var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  border-bottom: 2px solid rgba(11, 42, 60, 0.08);
+}
+
+.board__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+}
+
+.board__topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+}
+
+.board__room {
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.board__info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border: 0;
+  background: none;
+  color: var(--ink);
+}
+
+.board__mysummary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  min-height: var(--tap-min);
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.board__chevron {
+  transition: transform 160ms ease-out;
+}
+
+.board__chevron--up {
+  transform: rotate(180deg);
+}
+
+.board__ranks {
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: var(--r);
+  padding: var(--sp-2);
+  max-height: 44dvh;
+  overflow-y: auto;
+}
+
+.board__body {
+  flex: 1;
+  padding: var(--sp-4) var(--gutter) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* 어종 카드 2열 — Design §5.4 ④ */
+.board__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4) var(--sp-3);
+}
+
+.board__placeholder {
+  text-align: center;
+  padding: var(--sp-6) 0;
+}
+
+.board__locked {
+  margin: 0;
+  padding: var(--sp-3);
+  border-radius: var(--r);
+  background: var(--ink-12);
+  color: var(--ink-60);
+  font-size: 14px;
+  text-align: center;
+}

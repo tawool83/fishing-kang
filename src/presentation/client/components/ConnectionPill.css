@@ -1,0 +1,90 @@
+.conn {
+  position: relative;
+}
+
+.conn__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 var(--sp-3);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.conn__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--ink-30);
+}
+
+.conn__pill--online .conn__dot {
+  background: #3aa757;
+}
+
+.conn__pill--connecting .conn__dot {
+  background: #e2a523;
+}
+
+.conn__pill--ended .conn__dot {
+  background: var(--ink);
+}
+
+.conn__pill--offline {
+  color: var(--ink-60);
+}
+
+.conn__spinner {
+  width: 10px;
+  height: 10px;
+  border: 2px solid #e2a523;
+  border-top-color: transparent;
+  border-radius: var(--r-pill);
+  animation: conn-spin 700ms linear infinite;
+}
+
+@keyframes conn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.conn__popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 190px;
+  padding: var(--sp-3);
+  background: #fff;
+  border-radius: var(--r);
+  box-shadow: 0 6px 20px rgba(11, 42, 60, 0.2);
+  z-index: 20;
+}
+
+.conn__row {
+  margin: 0 0 var(--sp-2);
+  font-size: 13px;
+  color: var(--ink-60);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.conn__row strong {
+  color: var(--ink);
+}
+
+.conn__retry {
+  width: 100%;
+  min-height: var(--tap-min);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}

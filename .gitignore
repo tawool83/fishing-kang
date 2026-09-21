@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+.wrangler/
+*.log
+.DS_Store
+.env
+.env.local
+.dev.vars
+test-results/
+playwright-report/
+
+.playwright/
+
+# bkit 세션 산출물 (PDCA 상태만 추적)
+.bkit/audit/
+.bkit/runtime/

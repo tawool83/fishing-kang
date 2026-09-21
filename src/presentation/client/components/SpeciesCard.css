@@ -1,0 +1,106 @@
+.species {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  background: #fff;
+  border: 2px solid var(--ink-12);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-card);
+}
+
+/* 미전송 건이 남아 있는 카드 — 대기열에 쌓였다는 신호 */
+.species--pending {
+  border-style: dashed;
+  border-color: var(--ink-30);
+}
+
+.species__head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.species__name {
+  font-weight: 700;
+  font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.species__count {
+  font-family: var(--font-display);
+  font-size: 40px;
+  line-height: 1;
+  text-align: center;
+  color: var(--ink);
+}
+
+.species__plus {
+  min-height: var(--tap-primary);
+  border: 0;
+  border-radius: 10px;
+  background: var(--buoy);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 22px;
+  transition: transform 100ms ease-out;
+}
+
+.species__plus:active:not(:disabled) {
+  background: var(--buoy-dark);
+  transform: scale(0.97);
+}
+
+.species__plus:disabled {
+  opacity: 0.4;
+}
+
+/*
+ * −1은 시각적으로 32px이지만 터치 영역은 44px이다.
+ * 작게 보이게 해서 오터치를 줄이되, 접근성 기준은 지킨다.
+ */
+.species__minus {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-60);
+  font-size: 20px;
+  z-index: 1;
+}
+
+.species__minus::before {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  background: #fff;
+  border: 2px solid var(--ink-12);
+}
+
+.species__minus > span {
+  position: relative;
+  line-height: 1;
+}
+
+.species__minus:disabled {
+  opacity: 0.35;
+}
+
+.species__plus:focus-visible,
+.species__minus:focus-visible {
+  outline: 3px solid var(--sea-3);
+  outline-offset: 2px;
+}

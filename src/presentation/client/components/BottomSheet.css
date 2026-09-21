@@ -1,0 +1,69 @@
+.sheet__scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 42, 60, 0.45);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 45;
+}
+
+.sheet {
+  width: 100%;
+  max-width: var(--max-w);
+  max-height: 88dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--sand);
+  border-radius: var(--r-sheet) var(--r-sheet) 0 0;
+  box-shadow: var(--shadow-sheet);
+  animation: sheet-up 180ms ease-out;
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(16px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.sheet__handle {
+  width: 40px;
+  height: 4px;
+  margin: var(--sp-2) auto 0;
+  border-radius: var(--r-pill);
+  background: var(--ink-30);
+}
+
+.sheet__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--gutter) var(--sp-2);
+}
+
+.sheet__title {
+  font-size: 20px;
+}
+
+.sheet__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border: 0;
+  background: none;
+  color: var(--ink-60);
+}
+
+.sheet__body {
+  overflow-y: auto;
+  padding: 0 var(--gutter) calc(var(--sp-6) + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}

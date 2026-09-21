@@ -1,0 +1,57 @@
+.tiles {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--sp-2);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.tiles__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 4;
+  min-height: 52px;
+  background: #fff;
+  border: 2px solid var(--ink-12);
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--ink);
+}
+
+.tiles--display .tiles__tile {
+  border-color: var(--ink);
+}
+
+.tiles--display {
+  cursor: pointer;
+}
+
+.tiles__tile--active {
+  border-color: var(--sea);
+}
+
+/* 투명 입력이 타일 전체를 덮는다 — 캐럿·자동완성·붙여넣기가 정상 동작한다 */
+.tiles__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  border: 0;
+  background: transparent;
+  letter-spacing: 3em;
+  z-index: 1;
+}
+
+.tiles__input:focus {
+  outline: none;
+}
+
+.tiles--input:focus-within .tiles__tile {
+  border-color: var(--ink-30);
+}

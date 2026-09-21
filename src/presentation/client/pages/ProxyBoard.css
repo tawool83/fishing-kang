@@ -1,0 +1,66 @@
+/* 내 화면과 확실히 구분한다 — Design §5.4 ⑦ */
+.proxy {
+  background: var(--proxy-bg);
+  min-height: 100dvh;
+}
+
+.proxy__stripe {
+  height: 8px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--proxy-banner) 0 10px,
+    #f0c778 10px 20px
+  );
+}
+
+.proxy__banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--gutter);
+  background: var(--proxy-banner);
+  color: #fff;
+}
+
+.proxy__banner-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.proxy__banner-text strong {
+  font-size: 16px;
+}
+
+.proxy__sub {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.proxy__exit {
+  flex: 0 0 auto;
+  min-height: var(--tap-min);
+  padding: 0 var(--sp-3);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+  background: transparent;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.proxy__body {
+  flex: 1;
+  padding: var(--sp-4) var(--gutter) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.proxy__summary {
+  margin: 0;
+  font-size: 15px;
+  text-align: center;
+  color: var(--proxy-banner);
+}

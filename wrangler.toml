@@ -1,0 +1,29 @@
+# 강태공 — Cloudflare Workers 설정
+# Design Ref: §2.1 — 방 1개 = Durable Object 1개. 정적 자산 + API + DO를 한 번에 배포.
+#
+# NOTE: module-1 시점의 골격이다. DO 클래스(RoomDurableObject)와 마이그레이션은
+#       module-2에서 실제 구현과 함께 활성화한다.
+
+name = "gangtaegong"
+main = "src/presentation/worker/index.ts"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[vars]
+# Design Ref: §10.3
+APP_ORIGIN = "https://fish.allegru.dev"
+ROOM_TTL_DAYS = "7"      # Plan FR-30 — 마지막 활동 후 7일에 DO alarm으로 방 전체 삭제
+COOLDOWN_MS = "10000"    # Plan FR-10 — +1 쿨다운, 사람 단위
+
+[[durable_objects.bindings]]
+name = "ROOM_DO"
+class_name = "RoomDurableObject"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RoomDurableObject"]

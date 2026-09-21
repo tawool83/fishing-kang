@@ -1,0 +1,103 @@
+.addsp__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.addsp__label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-60);
+}
+
+.addsp__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.addsp__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-3);
+  background: #fff;
+  border: 2px solid var(--ink-12);
+  border-radius: var(--r);
+  color: var(--ink);
+  text-align: left;
+}
+
+.addsp__item:disabled {
+  opacity: 0.5;
+}
+
+.addsp__item-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.addsp__count,
+.addsp__hint {
+  font-size: 13px;
+  color: var(--ink-60);
+}
+
+.addsp__create {
+  min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px dashed var(--sea);
+  border-radius: var(--r);
+  background: #fff;
+  color: var(--ink);
+  text-align: left;
+  font-size: 15px;
+}
+
+/* Plan FR-08 — 내 카드 관리 */
+.addsp__note {
+  margin: calc(var(--sp-1) * -1) 0 0;
+}
+
+.addsp__manage {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--tap-min);
+  padding: var(--sp-2) var(--sp-3);
+  background: #fff;
+  border: 2px solid var(--ink-12);
+  border-radius: var(--r);
+}
+
+.addsp__hidden-tag {
+  margin-left: var(--sp-2);
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: var(--r-pill);
+  background: var(--ink-12);
+  color: var(--ink-60);
+}
+
+.addsp__action {
+  flex: 0 0 auto;
+  min-height: var(--tap-min);
+  padding: 0 var(--sp-3);
+  border: 2px solid var(--ink-12);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.addsp__action:focus-visible {
+  outline: 3px solid var(--sea-3);
+  outline-offset: 2px;
+}

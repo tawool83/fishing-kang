@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /* Workers 런타임에는 DOM이 없다. workers-types가 fetch·Response·WebSocket을 제공한다 */
+    "lib": ["ES2022"],
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": [
+    "src/domain",
+    "src/application",
+    "src/infrastructure",
+    "src/presentation/worker",
+    "tests/worker"
+  ],
+  "exclude": ["node_modules", "dist", ".wrangler"]
+}

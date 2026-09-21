@@ -1,0 +1,73 @@
+/*
+ * 디자인 토큰 — 디자인 초안 v0.2 확정값 (Design "Design Anchor").
+ * 여기 없는 색은 쓰지 않는다.
+ */
+:root {
+  /* 하늘·바다 */
+  --sky: #9ed9f0;
+  --sea: #2ba9c4;
+  --sea-2: #22a0bb;
+  --sea-3: #1a8da8;
+
+  /* 바탕·글자 */
+  --sand: #f7f2e7;
+  --ink: #0b2a3c;
+  --ink-60: rgba(11, 42, 60, 0.6);
+  --ink-30: rgba(11, 42, 60, 0.3);
+  /* Design §5.4 ⑧ — 4위 이하 순위 배지·막대 */
+  --ink-20: rgba(11, 42, 60, 0.2);
+  --ink-12: rgba(11, 42, 60, 0.12);
+
+  /* 주요 버튼 */
+  --buoy: #c43e18;
+  --buoy-dark: #a43312;
+
+  /* 메달 */
+  --gold: #e2a523;
+  --silver: #b8c3ca;
+  --bronze: #c07a3c;
+
+  /* 히어로 일러스트 */
+  --marlin: #245c99;
+  --marlin-2: #1a4677;
+  --sail: #ffffff;
+
+  /* 방장 대리 입력 모드 전용 */
+  --proxy-bg: #fbe7c6;
+  --proxy-banner: #7a3a0c;
+
+  /* 어종 아이콘 */
+  --fish-rock: #4e5e66;
+  --fish-flat: #8a6a48;
+  --fish-gree: #5e7a3a;
+  --fish-file: #2f6f8a;
+
+  /* 타이포 */
+  --font-display: 'Black Han Sans', system-ui, sans-serif;
+  --font-body:
+    'IBM Plex Sans KR', system-ui, -apple-system, 'Apple SD Gothic Neo', sans-serif;
+
+  /* 4px 그리드 */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+
+  --r: 14px;
+  --r-sheet: 20px;
+  --r-pill: 999px;
+
+  /* 터치 타깃 — Design §5.4: +1은 64px, 그 외 44px 이상 */
+  --tap-min: 44px;
+  --tap-primary: 64px;
+
+  --gutter: 16px;
+  --max-w: 430px;
+
+  --shadow-card: 0 2px 8px rgba(11, 42, 60, 0.08);
+  --shadow-sheet: 0 -6px 24px rgba(11, 42, 60, 0.16);
+}

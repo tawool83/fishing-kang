@@ -1,0 +1,36 @@
+.info__label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-60);
+}
+
+.info__members {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* 방장 메뉴는 배경색으로 확실히 구분한다 (Design §5.4 ⑤) */
+.info__host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--proxy-bg);
+  border-radius: var(--r);
+}
+
+.info__add {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.info__privacy {
+  text-align: center;
+  margin: 0;
+}

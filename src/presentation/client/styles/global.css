@@ -1,0 +1,136 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--sand);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  /* 젖은 손 오터치로 텍스트가 잡히는 걸 막는다 */
+  -webkit-tap-highlight-color: transparent;
+}
+
+#app {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+input {
+  font-family: inherit;
+  font-size: 16px; /* iOS 사파리가 16px 미만이면 포커스 시 확대한다 */
+}
+
+/* 화면 낭독기 전용 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page__body {
+  padding: var(--sp-6) var(--gutter) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.card {
+  background: #fff;
+  border-radius: var(--r);
+  box-shadow: var(--shadow-card);
+  padding: var(--sp-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.field__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-60);
+}
+
+.field__input {
+  height: 52px;
+  padding: 0 var(--sp-4);
+  border: 2px solid var(--ink-12);
+  border-radius: var(--r);
+  background: #fff;
+  color: var(--ink);
+}
+
+.field__input:focus {
+  outline: none;
+  border-color: var(--sea);
+}
+
+.field__error {
+  font-size: 14px;
+  color: var(--buoy);
+}
+
+.muted {
+  color: var(--ink-60);
+  font-size: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

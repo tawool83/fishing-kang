@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+
+    /* Design §10.4 — strict 전제. noUncheckedIndexedAccess로 배열 접근 실수를 타입에서 잡는다 */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    /* Design §10.2 — import type 강제 */
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+
+    /* Design §10.2 — 레이어 경로 별칭 */
+    "baseUrl": ".",
+    "paths": {
+      "@domain/*": ["src/domain/*"],
+      "@application/*": ["src/application/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@presentation/*": ["src/presentation/*"],
+      "@tests/*": ["tests/*"]
+    }
+  },
+  "include": ["src", "tests", "*.config.ts"],
+  /**
+   * Worker 코드는 `tsconfig.worker.json`이 맡는다.
+   * `@cloudflare/workers-types`와 DOM lib은 fetch·Response 등을 서로 다르게 선언해
+   * 같은 프로그램에 섞으면 중복 식별자 오류가 난다.
+   */
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".wrangler",
+    "src/infrastructure/worker",
+    "src/presentation/worker",
+    "tests/worker"
+  ]
+}

@@ -1,0 +1,33 @@
+.join__title {
+  font-size: 26px;
+}
+
+.join__label {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-60);
+}
+
+.join__hint {
+  margin: calc(var(--sp-2) * -1) 0 0;
+}
+
+.join__room {
+  background: linear-gradient(180deg, var(--sky) 0%, #fff 72%);
+  border: 2px solid var(--ink-12);
+}
+
+.join__room-name {
+  font-size: 22px;
+  margin-bottom: var(--sp-1);
+}
+
+.join__members {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}

@@ -1,0 +1,40 @@
+.dialog__scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 42, 60, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+  z-index: 50;
+}
+
+.dialog {
+  width: 100%;
+  max-width: 340px;
+  background: #fff;
+  border-radius: var(--r);
+  padding: var(--sp-5);
+  box-shadow: 0 8px 32px rgba(11, 42, 60, 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.dialog__title {
+  font-size: 20px;
+}
+
+.dialog__body {
+  margin: 0;
+  font-size: 15px;
+  color: var(--ink-60);
+  line-height: 1.5;
+}
+
+.dialog__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}

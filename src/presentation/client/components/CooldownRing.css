@@ -1,0 +1,32 @@
+.cooldown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tap-primary);
+}
+
+.cooldown svg {
+  transform: rotate(-90deg);
+}
+
+.cooldown__track {
+  fill: none;
+  stroke: var(--ink-12);
+  stroke-width: 5;
+}
+
+.cooldown__fill {
+  fill: none;
+  stroke: var(--buoy);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 200ms linear;
+}
+
+.cooldown__label {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--ink-60);
+}

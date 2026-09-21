@@ -1,0 +1,63 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  width: 100%;
+  border: 2px solid transparent;
+  border-radius: var(--r);
+  font-weight: 700;
+  transition:
+    transform 120ms ease-out,
+    background-color 120ms ease-out;
+}
+
+/* 크기 — Design §5.4: 주요 동작 64px, 보조 44px 이상 */
+.btn--lg {
+  min-height: var(--tap-primary);
+  font-size: 18px;
+}
+
+.btn--md {
+  min-height: var(--tap-min);
+  font-size: 16px;
+  padding: 0 var(--sp-4);
+}
+
+/* 색 */
+.btn--primary {
+  background: var(--buoy);
+  color: #fff;
+}
+
+.btn--primary:active:not(:disabled) {
+  background: var(--buoy-dark);
+  transform: scale(0.985);
+}
+
+.btn--outline {
+  background: #fff;
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.btn--outline:active:not(:disabled) {
+  background: rgba(11, 42, 60, 0.04);
+  transform: scale(0.985);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink-60);
+  font-weight: 500;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--sea-3);
+  outline-offset: 2px;
+}
