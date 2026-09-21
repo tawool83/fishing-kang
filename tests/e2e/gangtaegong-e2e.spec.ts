@@ -84,9 +84,11 @@ test('#3 오프라인 대기열 — 끊긴 사이 누른 탭이 유실도 중복
   await expect(page.getByText(/대기 중이던 3건을 전송했어요/)).toBeVisible({ timeout: 10_000 });
   await expect(page.getByLabel('우럭 4마리')).toBeVisible();
 
-  // 서버가 실제로 4건만 갖고 있는지 통계로 교차 확인
+  // 서버가 실제로 4건만 갖고 있는지 통계로 교차 확인.
+  // 요약 '총 조과' 칸을 콕 집어 본다 — 통계 화면엔 '…마리'가 여러 군데 나오고,
+  // 막연한 getByText('4마리')는 먼저 그려진 아무 요소나 잡아 검증이 헐거워진다.
   await page.getByRole('button', { name: '통계' }).click();
-  await expect(page.getByText('4마리')).toBeVisible();
+  await expect(page.locator('.summary__cell', { hasText: '총 조과' })).toContainText('4마리');
 });
 
 test('#4 오프라인 중 남이 잡아도 내 pending이 사라지지 않는다 (스냅샷 병합)', async ({

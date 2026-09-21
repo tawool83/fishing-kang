@@ -117,6 +117,7 @@
   align-items: flex-end;
   gap: 3px;
   height: 150px;
+  justify-content: flex-start;
   overflow-x: auto;
   padding-bottom: var(--sp-1);
 }
@@ -128,8 +129,9 @@
   justify-content: flex-end;
   gap: 2px;
   height: 100%;
-  min-width: 26px;
-  flex: 1 0 auto;
+  /* grow를 주면 버킷이 1~2개일 때 막대 하나가 화면 폭을 다 먹는다 */
+  flex: 0 0 auto;
+  width: 26px;
 }
 
 .buckets__count {

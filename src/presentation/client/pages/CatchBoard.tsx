@@ -108,47 +108,56 @@ export function CatchBoard({ code }: { code: string }) {
           </div>
         </div>
 
-        <Podium podium={store.podium.value} />
+        {/* 통계 탭은 자체 하늘 헤더 + 최종 포디움을 갖는다 (Design §5.4 ⑥).
+            여기서 또 그리면 포디움이 두 번 나온다. */}
+        {tab !== 'stats' && (
+          <>
+            <Podium podium={store.podium.value} />
 
-        <button
-          type="button"
-          class="board__mysummary"
-          onClick={() => {
-            setExpandRanks(!expandRanks);
-          }}
-          aria-expanded={expandRanks}
-        >
-          <span>
-            내 조과 <strong>{myRank?.total ?? 0}마리</strong>
-            {myRank !== undefined && (
-              <>
-                {' · '}
-                {myRank.tied && '공동 '}
-                {myRank.rank}위
-              </>
+            <button
+              type="button"
+              class="board__mysummary"
+              onClick={() => {
+                setExpandRanks(!expandRanks);
+              }}
+              aria-expanded={expandRanks}
+            >
+              <span>
+                내 조과 <strong>{myRank?.total ?? 0}마리</strong>
+                {myRank !== undefined && (
+                  <>
+                    {' · '}
+                    {myRank.tied && '공동 '}
+                    {myRank.rank}위
+                  </>
+                )}
+              </span>
+              <span
+                class={`board__chevron ${expandRanks ? 'board__chevron--up' : ''}`}
+                aria-hidden="true"
+              >
+                ▾
+              </span>
+            </button>
+
+            {(expandRanks || tab === 'rank') && room !== null && (
+              <div class="board__ranks">
+                <RankList
+                  ranking={ranking}
+                  myMemberId={me}
+                  hostMemberId={room.hostMemberId}
+                  phonelessIds={store.phonelessIds.value}
+                  {...(store.isHost.value && !isEnded
+                    ? {
+                        onProxy: (memberId: MemberId) => {
+                          setProxyTarget(memberId);
+                        },
+                      }
+                    : {})}
+                />
+              </div>
             )}
-          </span>
-          <span class={`board__chevron ${expandRanks ? 'board__chevron--up' : ''}`} aria-hidden="true">
-            ▾
-          </span>
-        </button>
-
-        {(expandRanks || tab === 'rank') && room !== null && (
-          <div class="board__ranks">
-            <RankList
-              ranking={ranking}
-              myMemberId={me}
-              hostMemberId={room.hostMemberId}
-              phonelessIds={store.phonelessIds.value}
-              {...(store.isHost.value && !isEnded
-                ? {
-                    onProxy: (memberId: MemberId) => {
-                      setProxyTarget(memberId);
-                    },
-                  }
-                : {})}
-            />
-          </div>
+          </>
         )}
       </header>
 

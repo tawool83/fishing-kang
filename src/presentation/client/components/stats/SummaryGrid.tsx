@@ -24,6 +24,7 @@ export function SummaryGrid({ summary }: { summary: StatsSummary }) {
 
 export function formatDuration(ms: number): string {
   if (ms <= 0) return '—';
+  if (ms < 60_000) return '1분 미만';
   const minutes = Math.round(ms / 60_000);
   if (minutes < 60) return `${String(minutes)}분`;
   const hours = Math.floor(minutes / 60);
