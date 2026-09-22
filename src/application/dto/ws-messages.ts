@@ -147,6 +147,13 @@ export interface ProxiedMessage {
 export interface EndedMessage {
   t: 'ended';
   endedAt: Millis;
+  /**
+   * 3일 상한에 걸려 서버가 자동으로 끝낸 건가 (Plan FR-31).
+   *
+   * 화면 문구가 달라진다. 방장이 누른 종료는 "방장이 종료했어요"지만,
+   * 자동 종료는 아무도 누르지 않았으므로 왜 끝났는지 따로 알려줘야 한다.
+   */
+  auto: boolean;
 }
 
 export interface ResumedMessage {

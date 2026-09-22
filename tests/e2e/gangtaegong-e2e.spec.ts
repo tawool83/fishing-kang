@@ -236,8 +236,8 @@ test('#10 폰 없는 참여자가 통계에 그대로 집계된다 (FR-24·25)',
   // 방장이 대신 2마리 기록
   await page.getByRole('button', { name: /내 조과/ }).click();
   await page.getByLabel('철수아들 대신 입력하기').click();
-  await page.getByRole('button', { name: /어종 추가/ }).click();
-  await page.getByRole('button', { name: /우럭/ }).first().click();
+  // 2026-09-23 — 어종은 방 전원에게 깔리므로 철수아들 카드도 이미 있다.
+  // 전에는 여기서 대상자에게 어종을 먼저 추가해 줘야 했다
   await page.getByLabel('우럭 한 마리 추가').click();
   await expect(page.getByLabel('우럭 1마리')).toBeVisible();
   await page.getByRole('button', { name: '내 화면으로' }).click();

@@ -3,6 +3,7 @@ import { computed, signal } from '@preact/signals';
 import type { MemberId } from '@domain/entities/member';
 import { computeRanking, podium, rankTotals } from '@domain/rules/ranking';
 import type { RankEntry } from '@domain/rules/ranking';
+import { isArchived, isResumable } from '@domain/rules/roomLifecycle';
 import { normalizeName } from '@domain/rules/speciesName';
 import { COOLDOWN_MS, cooldownRemainingMs } from '@domain/rules/cooldown';
 import { countActive, pickVoidTarget } from '@domain/rules/catchLog';
@@ -42,6 +43,9 @@ export class RoomStore {
 
   readonly myMemberId = signal<MemberId | null>(null);
   readonly roomCode = signal<string>('');
+
+  /** 직전 종료가 3일 상한에 의한 자동 종료였는가 (Plan FR-31) */
+  lastEndWasAuto = false;
 
   /** 직전 `proxied` 알림 — 세션이 스낵바로 띄운다 (Plan FR-23) */
   lastProxied: { by: string; speciesName: string; delta: number; targetId: string } | null = null;
@@ -142,10 +146,22 @@ export class RoomStore {
   /** 금·은·동 3칸 (Plan FR-14) */
   readonly podium = computed(() => podium(this.ranking.value));
 
-  /** 폰 없는 참여자 id 집합 — 순위 목록의 배지에 쓴다 (Plan FR-24) */
-  readonly phonelessIds = computed(
-    () => new Set(this.members.value.filter((m) => !m.hasDevice).map((m) => m.id))
-  );
+  /**
+   * Plan FR-32 — 방장이 아직 재개해서 정정할 수 있는가.
+   *
+   * 시각 판정이라 computed로 두면 시간이 흘러도 갱신되지 않는다. 화면이 이미
+   * 200ms마다 다시 그리므로(쿨다운 게이지) 그때 `now`를 받아 계산한다.
+   */
+  canResume(now: number): boolean {
+    const room = this.room.value;
+    return room !== null && isResumable(room, now);
+  }
+
+  /** 정정 시간이 지나 결과 열람만 남았는가 — 안내 문구에 쓴다 */
+  isReadOnly(now: number): boolean {
+    const room = this.room.value;
+    return room !== null && isArchived(room, now);
+  }
 
   /** 특정 멤버의 어종 카드 + 마릿수. 대리 입력 화면은 대상자 id를 넘긴다 */
   cardsOf(memberId: MemberId | null): CardView[] {
@@ -332,6 +348,7 @@ export class RoomStore {
         break;
 
       case 'ended':
+        this.lastEndWasAuto = message.auto;
         connectionStore.setEnded(true);
         // 서버 확정 상태를 다시 받아 화면을 잠근다
         this.applyRoomStatus('ended', message.endedAt);

@@ -1,0 +1,151 @@
+<!doctype html>
+<!--
+  OG 카드 원본 (1200×630) — public/og.png 를 만드는 소스다.
+
+  재생성:
+    node scripts/build-og-image.mjs
+
+  일러스트는 HeroIllustration.tsx 와 같은 그림이다. 색은 tokens.css 확정값만 쓴다.
+  카톡 피드 카드에서는 이미지가 작게 잘려 보이므로 제목을 크게 잡았다.
+-->
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --sky: #9ed9f0;
+        --sea: #2ba9c4;
+        --sea-2: #22a0bb;
+        --sea-3: #1a8da8;
+        --sand: #f7f2e7;
+        --ink: #0b2a3c;
+        --ink-60: rgba(11, 42, 60, 0.6);
+        --buoy: #c43e18;
+        --marlin: #245c99;
+        --marlin-2: #1a4677;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        width: 1200px;
+        height: 630px;
+        background: var(--sand);
+        font-family: 'IBM Plex Sans KR', system-ui, sans-serif;
+        overflow: hidden;
+      }
+      .scene { display: block; width: 1200px; height: 370px; }
+      .band {
+        height: 260px;
+        display: flex;
+        align-items: center;
+        gap: 36px;
+        padding: 0 72px;
+      }
+      .mark {
+        flex: 0 0 auto;
+        width: 124px;
+        height: 124px;
+        border-radius: 30px;
+        overflow: hidden;
+      }
+      .title {
+        font-family: 'Black Han Sans', system-ui, sans-serif;
+        font-size: 112px;
+        line-height: 1;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .tagline {
+        margin-top: 18px;
+        font-size: 48px;
+        font-weight: 500;
+        color: var(--ink-60);
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="scene" viewBox="-162 0 714 220" preserveAspectRatio="xMidYMax meet">
+      <!-- 1200×370 카드 비율(3.24:1)에 맞춰 viewBox를 좌우로 넓혔다.
+           HeroIllustration 의 좌표계(0~390)는 그대로 두고 배경만 확장한다. -->
+      <rect x="-162" width="714" height="220" fill="var(--sky)" />
+      <g fill="#fff" opacity="0.9">
+        <ellipse cx="-70" cy="46" rx="34" ry="15" />
+        <ellipse cx="-44" cy="39" rx="22" ry="13" />
+        <ellipse cx="70" cy="40" rx="30" ry="14" />
+        <ellipse cx="92" cy="34" rx="20" ry="12" />
+        <ellipse cx="300" cy="30" rx="26" ry="12" />
+        <ellipse cx="322" cy="26" rx="16" ry="9" />
+        <ellipse cx="470" cy="52" rx="30" ry="13" />
+        <ellipse cx="494" cy="46" rx="19" ry="11" />
+      </g>
+      <g stroke="var(--ink)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.75">
+        <path d="M150 42 q7 -7 14 0 q7 -7 14 0" />
+        <path d="M205 62 q5 -5 10 0 q5 -5 10 0" />
+        <path d="M-110 88 q6 -6 12 0 q6 -6 12 0" />
+        <path d="M410 96 q5 -5 10 0 q5 -5 10 0" />
+      </g>
+      <g>
+        <ellipse cx="-24" cy="132" rx="46" ry="12" fill="#efdcb4" />
+        <path d="M-30 132 q-2 -22 4 -32" stroke="#6b5a3a" stroke-width="4" fill="none" stroke-linecap="round" />
+        <g fill="#4f7a34">
+          <path d="M-26 100 q-20 -8 -26 4 q16 -2 26 2z" />
+          <path d="M-26 100 q20 -8 26 4 q-16 -2 -26 2z" />
+          <path d="M-26 100 q-6 -20 6 -24 q2 16 -6 24z" />
+        </g>
+      </g>
+      <rect x="-162" y="136" width="714" height="84" fill="var(--sea)" />
+      <path d="M-162 150 q30 -8 60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 t60 0 v70 H-162z" fill="var(--sea-2)" />
+      <path d="M-162 172 q40 -8 80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 v48 H-162z" fill="var(--sea-3)" />
+      <g transform="translate(342 92) rotate(-24)">
+        <path d="M0 28 q30 -26 74 -16 q-10 12 -2 20 q-8 10 -22 12 q-30 4 -50 -16z" fill="var(--marlin)" />
+        <path d="M74 12 l34 -14 l-30 20z" fill="var(--marlin-2)" />
+        <path d="M24 10 q14 -20 34 -14 q-16 6 -22 18z" fill="var(--marlin-2)" />
+        <path d="M0 28 q-16 -14 -22 -22 q18 6 26 12z" fill="var(--marlin-2)" />
+        <path d="M0 28 q-18 8 -26 18 q20 -2 28 -10z" fill="var(--marlin-2)" />
+        <circle cx="62" cy="14" r="3" fill="#fff" />
+        <circle cx="62.5" cy="14" r="1.6" fill="var(--ink)" />
+      </g>
+      <g fill="#fff" opacity="0.85">
+        <ellipse cx="326" cy="150" rx="26" ry="8" />
+        <circle cx="308" cy="138" r="4" />
+        <circle cx="348" cy="134" r="3" />
+        <circle cx="332" cy="128" r="2.5" />
+      </g>
+      <g transform="translate(96 156)">
+        <path d="M40 -18 L82 -44" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" />
+        <path d="M82 -44 q10 16 6 34" stroke="var(--ink)" stroke-width="1.2" fill="none" />
+        <circle cx="30" cy="-30" r="8" fill="#f3d3a8" />
+        <path d="M18 -32 q12 -10 24 0 q-12 4 -24 0z" fill="#e0c07a" />
+        <path d="M22 -22 q8 -4 16 0 l4 22 H18z" fill="#2f6f8a" />
+        <path d="M-10 0 h96 l-12 22 H2z" fill="#fff" />
+        <path d="M-10 0 h96 l-3 6 H-7z" fill="var(--buoy)" />
+      </g>
+    </svg>
+
+    <div class="band">
+      <svg class="mark" viewBox="0 0 512 512">
+        <rect width="512" height="512" rx="96" fill="#9ED9F0" />
+        <path d="M0 330h512v182H0z" fill="#2BA9C4" />
+        <path d="M0 362q64-18 128 0t128 0t128 0t128 0v150H0z" fill="#1A8DA8" />
+        <g transform="translate(120 150) rotate(-18)">
+          <path d="M0 96q62-58 168-38-22 28-4 46-18 22-50 26-68 10-114-34z" fill="#245C99" />
+          <path d="M168 58l70-30-62 44z" fill="#1A4677" />
+          <path d="M52 56q30-44 76-32-36 14-50 40z" fill="#1A4677" />
+          <path d="M0 96q-34-30-48-48 40 14 58 26z" fill="#1A4677" />
+          <path d="M0 96q-38 18-56 40 44-4 62-22z" fill="#1A4677" />
+          <circle cx="142" cy="60" r="8" fill="#fff" />
+          <circle cx="143" cy="60" r="4" fill="#0B2A3C" />
+        </g>
+      </svg>
+      <div>
+        <div class="title">강태공</div>
+        <div class="tagline">지인끼리 겨루는 낚시 조과 실시간 랭킹</div>
+      </div>
+    </div>
+  </body>
+</html>

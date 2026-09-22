@@ -6,6 +6,7 @@ import type { UseCaseDeps } from '../deps';
 import type { JoinRoomInput } from '../../dto/requests';
 import type { JoinResultDto } from '../../dto/responses';
 import { requireRoom, requireWritable } from '../guards';
+import { giveAllSpeciesTo } from '../species/cardFanout';
 
 /**
  * 새 이름으로 방 참여 (Plan FR-02, FR-06).
@@ -46,6 +47,8 @@ export class JoinRoom {
       linkedAt: now,
       lastSeenAt: now,
     });
+    // 방에 이미 있는 어종은 새 참여자에게도 그대로 보여야 한다 (cardFanout.ts)
+    giveAllSpeciesTo(repo, memberId);
     repo.touchActivity(now);
 
     return { memberId, isHost: isHost(room, memberId) };

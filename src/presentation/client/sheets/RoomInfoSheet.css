@@ -34,3 +34,28 @@
   text-align: center;
   margin: 0;
 }
+
+/* Plan FR-34 — 순위 종소리 켜고 끄기 */
+.info__sound {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: #fff;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.info__sound[aria-pressed='false'] {
+  color: var(--ink-60);
+}
+
+.info__locked {
+  margin: 0;
+  font-size: 13px;
+}

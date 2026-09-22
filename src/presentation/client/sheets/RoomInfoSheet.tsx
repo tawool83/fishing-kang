@@ -9,6 +9,7 @@ import { InviteCodeTiles } from '../components/InviteCodeTiles';
 import { MemberRow } from '../components/MemberRow';
 import { ShareRow } from '../components/ShareRow';
 import type { RoomSession } from '../view-models/roomSession';
+import { clock, soundStore } from '../services';
 import './RoomInfoSheet.css';
 
 interface Props {
@@ -34,6 +35,8 @@ export function RoomInfoSheet({ session, onClose }: Props) {
   const ranking = store.ranking.value;
   const isHost = store.isHost.value;
   const isEnded = store.isEnded.value;
+  const canResume = store.canResume(clock.now());
+  const muted = soundStore.muted.value;
 
   const [newName, setNewName] = useState('');
   const [confirmEnd, setConfirmEnd] = useState(false);
@@ -83,6 +86,21 @@ export function RoomInfoSheet({ session, onClose }: Props) {
           </ul>
         </section>
 
+        <section class="stack">
+          <h3 class="info__label">소리</h3>
+          <button
+            type="button"
+            class="info__sound"
+            aria-pressed={!muted}
+            onClick={() => {
+              soundStore.toggleMute();
+            }}
+          >
+            <span aria-hidden="true">{muted ? '🔇' : '🔔'}</span>
+            <span>순위가 바뀌면 종소리 {muted ? '꺼짐' : '켜짐'}</span>
+          </button>
+        </section>
+
         {isHost && (
           <section class="info__host">
             <h3 class="info__label">방장 메뉴</h3>
@@ -110,16 +128,24 @@ export function RoomInfoSheet({ session, onClose }: Props) {
               </AppButton>
             </form>
 
+            {isEnded && !canResume && (
+              <p class="muted info__locked">
+                정정할 수 있는 시간이 지났어요. 결과는 그대로 볼 수 있어요.
+              </p>
+            )}
+
             {isEnded ? (
-              <AppButton
-                variant="outline"
-                onClick={() => {
-                  session.resumeFishing();
-                  onClose();
-                }}
-              >
-                낚시 재개
-              </AppButton>
+              canResume && (
+                <AppButton
+                  variant="outline"
+                  onClick={() => {
+                    session.resumeFishing();
+                    onClose();
+                  }}
+                >
+                  낚시 재개
+                </AppButton>
+              )
             ) : (
               <AppButton
                 onClick={() => {
@@ -133,14 +159,15 @@ export function RoomInfoSheet({ session, onClose }: Props) {
         )}
 
         <p class="muted info__privacy">
-          이름과 조과 기록은 마지막 활동 후 <strong>7일</strong> 뒤 자동으로 지워져요.
+          낚시는 <strong>최대 3일</strong> 뒤 자동으로 종료돼요. 이름과 조과 기록은
+          종료 후 <strong>7일</strong>까지 볼 수 있고 그 뒤 자동으로 지워져요.
         </p>
       </BottomSheet>
 
       {confirmEnd && (
         <ConfirmDialog
           title="낚시를 종료할까요?"
-          body="종료하면 모두의 입력이 잠겨요. 방장이 다시 열 수 있어요."
+          body="종료하면 모두의 입력이 잠겨요. 24시간 안에는 다시 열어 정정할 수 있어요."
           confirmLabel="종료하기"
           onCancel={() => {
             setConfirmEnd(false);

@@ -20,6 +20,8 @@ interface Props {
   isHost: boolean;
   /** 방 상태가 바뀌면 다시 불러오기 위한 키 */
   refreshKey: number;
+  /** Plan FR-32 — 종료 후 24시간이 지나면 재개할 수 없다 */
+  canResume: boolean;
   onResume: () => void;
 }
 
@@ -31,7 +33,7 @@ interface Props {
  * 데이터는 서버 `GET /stats`에서 받는다. 클라이언트는 남의 조과 이벤트를
  * 갖고 있지 않아서 로컬로는 계산할 수 없다 (module-4에서 확인된 사실).
  */
-export function StatsBoard({ code, isEnded, isHost, refreshKey, onResume }: Props) {
+export function StatsBoard({ code, isEnded, isHost, refreshKey, canResume, onResume }: Props) {
   const [stats, setStats] = useState<StatsDto | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -108,12 +110,18 @@ export function StatsBoard({ code, isEnded, isHost, refreshKey, onResume }: Prop
         </p>
       )}
 
+      {isEnded && !canResume && (
+        <p class="muted stats__note">
+          정정할 수 있는 시간이 지났어요. 이제 결과만 볼 수 있어요.
+        </p>
+      )}
+
       <div class="stats__actions">
         {/* US-09는 P1 — MVP에서는 비활성 (Plan §2.2) */}
         <AppButton variant="outline" disabled>
           결과 카드 공유하기 (준비 중)
         </AppButton>
-        {isHost && isEnded && (
+        {isHost && isEnded && canResume && (
           <AppButton variant="primary" onClick={onResume}>
             낚시 재개
           </AppButton>

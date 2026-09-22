@@ -96,9 +96,8 @@ export function roomFixture(at = T0): Fixture {
     actorMemberId: guest.memberId,
   });
 
-  // 방장도 같은 어종 카드를 갖게 한다 (방 사전은 공유되므로 id가 재사용된다)
-  new AddSpecies(h.deps).execute({ id: 'sp-x1', name: '우럭', actorMemberId: host.memberId });
-  new AddSpecies(h.deps).execute({ id: 'sp-x2', name: '광어', actorMemberId: host.memberId });
+  // 방장 카드는 따로 만들지 않는다 — 어종을 추가하면 방 전원에게 깔린다
+  // (2026-09-23, cardFanout.ts)
 
   return {
     ...h,

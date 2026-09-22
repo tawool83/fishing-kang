@@ -1,6 +1,8 @@
+import { effect } from '@preact/signals';
+
 import type { MemberId } from '@domain/entities/member';
 import { isDomainError } from '@domain/errors';
-import type { WritableClientMessage } from '@application/dto/ws-messages';
+import type { ServerMessage, WritableClientMessage } from '@application/dto/ws-messages';
 
 import { ProjectionRoomRepository } from '@infrastructure/client/ProjectionRoomRepository';
 import { LocalStorageOutbox } from '@infrastructure/client/LocalStorageOutbox';
@@ -10,7 +12,7 @@ import {
   browserSocketFactory,
 } from '@infrastructure/client/WsTransport';
 
-import { clock, ids, localStorageKv } from '../services';
+import { clock, ids, localStorageKv, soundStore } from '../services';
 import { RoomStore } from './roomStore';
 import { connectionStore } from './connectionStore';
 import { snackbarStore } from './snackbarStore';
@@ -32,6 +34,8 @@ export class RoomSession {
   private readonly outbox: LocalStorageOutbox;
   private readonly transport: WsTransport;
   private wasOffline = false;
+  /** 포디움 구독 해제 — 방을 떠날 때 끊는다 */
+  private stopWatchingPodium: (() => void) | null = null;
 
   constructor(readonly code: string) {
     this.outbox = new LocalStorageOutbox(localStorageKv, code);
@@ -42,7 +46,7 @@ export class RoomSession {
       network: browserNetworkMonitor,
       onMessage: (message) => {
         this.store.handleServerMessage(message);
-        this.onServerMessage(message.t);
+        this.onServerMessage(message);
       },
       onStatus: (status) => {
         connectionStore.setStatus(status, clock.now());
@@ -66,10 +70,20 @@ export class RoomSession {
       snackbarStore.show(`오래된 기록 ${String(dropped.length)}건은 전송하지 않았어요`);
     }
     connectionStore.setPending(this.outbox.size());
+
+    // Plan FR-34 — 금·은·동이 바뀌면 딸랑딸랑. effect는 즉시 한 번 돌면서
+    // 현재 포디움을 "소리 없이" 기준점으로 잡는다 (입장하자마자 울리면 안 된다).
+    soundStore.reset();
+    this.stopWatchingPodium = effect(() => {
+      soundStore.onPodium(this.store.podium.value);
+    });
+
     this.transport.connect();
   }
 
   stop(): void {
+    this.stopWatchingPodium?.();
+    this.stopWatchingPodium = null;
     this.transport.close();
   }
 
@@ -238,9 +252,15 @@ export class RoomSession {
     this.wasOffline = false;
   }
 
-  /** Plan FR-23 — 대리 입력을 받은 대상자에게 알림 */
-  private onServerMessage(kind: string): void {
-    if (kind !== 'proxied') return;
+  private onServerMessage(message: ServerMessage): void {
+    // Plan FR-31 — 아무도 안 눌렀는데 끝났다면 이유를 알려줘야 한다
+    if (message.t === 'ended' && message.auto) {
+      snackbarStore.show('3일이 지나 낚시가 자동으로 종료됐어요');
+      return;
+    }
+
+    // Plan FR-23 — 대리 입력을 받은 대상자에게 알림
+    if (message.t !== 'proxied') return;
     const last = this.store.lastProxied;
     if (last === null) return;
     snackbarStore.show(`${last.by}님이 ${last.speciesName} ${last.delta > 0 ? '+1' : '−1'} 했어요`, {

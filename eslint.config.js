@@ -127,6 +127,14 @@ export default tseslint.config(
     rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
   },
 
+  // 빌드 스크립트는 Node에서 돈다. `document`는 Playwright가 브라우저 쪽에서 실행한다
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: { console: 'readonly', document: 'readonly' },
+    },
+  },
+
   // 서비스 워커는 별도 전역 스코프에서 돈다 (window가 없다)
   {
     files: ['public/sw.js'],

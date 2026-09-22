@@ -3,6 +3,7 @@ import { TripleDeviceIdStore } from '@infrastructure/client/TripleDeviceIdStore'
 import { browserIndexedDb, browserLocalStorage } from '@infrastructure/client/storage';
 import { BrowserClock, ClientIdGenerator } from '@infrastructure/client/BrowserClock';
 import { detectInAppBrowser } from '@infrastructure/client/InAppBrowserDetector';
+import { SoundStore } from './view-models/soundStore';
 
 /**
  * 클라이언트 **Composition Root** (Design §9.2).
@@ -22,6 +23,9 @@ export const deviceStore = new TripleDeviceIdStore(
 );
 
 export const localStorageKv = browserLocalStorage();
+
+/** Plan FR-34 — 순위가 바뀌면 딸랑딸랑. 음소거 선택은 이 기기에 남는다 */
+export const soundStore = new SoundStore(localStorageKv);
 
 /** Plan FR-05 — 카톡 인앱 브라우저 감지. 식별이 아니라 안내 목적이다 */
 export const inAppBrowser = detectInAppBrowser(navigator.userAgent);

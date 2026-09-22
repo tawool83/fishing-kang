@@ -1,5 +1,7 @@
+import type { Millis } from '@domain/entities/common';
 import type { Room } from '@domain/entities/room';
 import { isHost, isRoomWritable } from '@domain/entities/room';
+import { isResumable } from '@domain/rules/roomLifecycle';
 import type { Member, MemberId } from '@domain/entities/member';
 import { DomainError } from '@domain/errors';
 import type { RoomRepository } from '../ports/RoomRepository';
@@ -17,6 +19,21 @@ export function requireRoom(repo: RoomRepository): Room {
 export function requireWritable(room: Room): void {
   if (!isRoomWritable(room)) {
     throw new DomainError('ROOM_ENDED', '낚시가 종료됐어요. 방장이 재개하면 다시 기록할 수 있어요.');
+  }
+}
+
+/**
+ * Plan FR-32 — 재개는 종료 후 24시간 이내, 그리고 3일 상한 안에서만.
+ *
+ * 지나면 방은 결과 열람 전용으로 굳는다. 되돌릴 방법은 없다 —
+ * 정정 창을 무한정 열어두면 "최대 3일"도 "종료"도 의미가 없어진다.
+ */
+export function requireResumable(room: Room, now: Millis): void {
+  if (!isResumable(room, now)) {
+    throw new DomainError(
+      'ROOM_ARCHIVED',
+      '정정할 수 있는 시간이 지났어요. 이제 결과만 볼 수 있어요.'
+    );
   }
 }
 

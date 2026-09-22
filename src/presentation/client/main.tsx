@@ -2,7 +2,7 @@ import { render } from 'preact';
 import './styles/global.css';
 import { App } from './App';
 import { startRouter } from './router';
-import { deviceStore } from './services';
+import { deviceStore, soundStore } from './services';
 
 /**
  * 앱 진입점.
@@ -21,10 +21,25 @@ async function boot(): Promise<void> {
   }
 
   registerServiceWorker();
+  unlockSoundOnFirstTap();
   startRouter();
 
   const root = document.getElementById('app');
   if (root !== null) render(<App />, root);
+}
+
+/**
+ * Plan FR-34 — iOS는 사용자가 화면을 건드리기 전에는 소리를 못 낸다.
+ *
+ * 첫 탭 한 번으로 AudioContext를 깨워두면, 나중에 순위가 바뀔 때
+ * 곧바로 종이 울린다. 깨우지 못해도 조용할 뿐 앱은 그대로 동작한다.
+ */
+function unlockSoundOnFirstTap(): void {
+  const unlock = () => {
+    soundStore.unlock();
+  };
+  addEventListener('pointerdown', unlock, { once: true });
+  addEventListener('keydown', unlock, { once: true });
 }
 
 /**

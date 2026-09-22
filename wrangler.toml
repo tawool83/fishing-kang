@@ -27,7 +27,7 @@ not_found_handling = "single-page-application"
 [vars]
 # Design Ref: §10.3
 APP_ORIGIN = "https://fish.allegru.dev"
-ROOM_TTL_DAYS = "7"      # Plan FR-30 — 마지막 활동 후 7일에 DO alarm으로 방 전체 삭제
+# 방 수명(낚시 3일 · 정정 24h · 열람 7일)은 도메인 상수다 — src/domain/rules/roomLifecycle.ts
 COOLDOWN_MS = "10000"    # Plan FR-10 — +1 쿨다운, 사람 단위
 
 [[durable_objects.bindings]]

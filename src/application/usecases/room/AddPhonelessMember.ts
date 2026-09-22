@@ -5,6 +5,7 @@ import type { UseCaseDeps } from '../deps';
 import type { AddPhonelessMemberInput } from '../../dto/requests';
 import type { JoinResultDto } from '../../dto/responses';
 import { requireHost, requireRoom, requireWritable } from '../guards';
+import { giveAllSpeciesTo } from '../species/cardFanout';
 
 /**
  * 폰 없는 참여자 등록 (Plan FR-24) — 방장 전용.
@@ -44,6 +45,8 @@ export class AddPhonelessMember {
       joinedAt: now,
       hasDevice: false, // 연결된 기기가 없는 멤버
     });
+    // 방장이 대신 입력하려면 이 사람에게도 카드가 있어야 한다 (cardFanout.ts)
+    giveAllSpeciesTo(repo, input.id);
     repo.touchActivity(now);
 
     return { memberId: input.id, isHost: false };

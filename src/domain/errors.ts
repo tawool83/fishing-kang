@@ -12,6 +12,7 @@ export type DomainErrorCode =
   | 'NAME_TAKEN'
   | 'MEMBER_ONLINE'
   | 'ROOM_ENDED'
+  | 'ROOM_ARCHIVED'
   | 'FORBIDDEN_PROXY'
   | 'NO_ACTIVE_CATCH'
   | 'CARD_NOT_EMPTY'

@@ -4,12 +4,13 @@ import { normalizeName, validateName } from '@domain/rules/speciesName';
 import type { UseCaseDeps } from '../deps';
 import type { AddSpeciesInput } from '../../dto/requests';
 import { requireRoom, requireWritable, resolveTarget } from '../guards';
+import { giveSpeciesToEveryone } from './cardFanout';
 
 export interface AddSpeciesResult {
   species: Species;
   /** 방 사전에 이미 있던 어종을 재사용했는가 */
   reused: boolean;
-  /** 이미 카드가 있어 아무것도 안 했는가 */
+  /** 아무에게도 새 카드가 생기지 않았는가 (방 전체가 이미 갖고 있었다) */
   idempotent: boolean;
   isProxy: boolean;
 }
@@ -23,7 +24,8 @@ export interface AddSpeciesResult {
  *
  * 이게 없으면 "우럭 / 우럭 / 조피볼락"처럼 표기가 갈려 통계가 깨진다.
  *
- * 카드는 항상 **내 목록 끝에** 0마리로 생긴다 (추가 순서 정렬).
+ * 카드는 **방 전원의 목록 끝에** 0마리로 생긴다 (2026-09-23 변경, cardFanout.ts).
+ * 전에는 추가한 사람에게만 생겨서, 같은 어종을 각자 따로 추가해야 했다.
  */
 export class AddSpecies {
   constructor(private readonly deps: UseCaseDeps) {}
@@ -59,17 +61,11 @@ export class AddSpecies {
       reused = false;
     }
 
-    if (repo.findCard(target.id, species.id) !== null) {
+    // 아무에게도 새 카드가 안 생겼다면 이미 방 전체가 갖고 있다는 뜻이다
+    if (giveSpeciesToEveryone(repo, species.id) === 0) {
       return { species, reused, idempotent: true, isProxy };
     }
 
-    const own = repo.listCards().filter((c) => c.memberId === target.id);
-    repo.addCard({
-      memberId: target.id,
-      speciesId: species.id,
-      sortOrder: own.length,
-      hidden: false,
-    });
     repo.touchActivity(now);
 
     return { species, reused, idempotent: false, isProxy };

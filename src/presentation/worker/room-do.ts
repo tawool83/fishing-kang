@@ -1,4 +1,5 @@
 import { computeRanking } from '@domain/rules/ranking';
+import { isPurgeable } from '@domain/rules/roomLifecycle';
 import { DomainError, isDomainError } from '@domain/errors';
 import type { MemberId } from '@domain/entities/member';
 
@@ -6,6 +7,7 @@ import type { UseCaseDeps } from '@application/usecases/deps';
 import type { ClientMessage, ServerMessage } from '@application/dto/ws-messages';
 import { idempotencyKeyOf } from '@application/dto/ws-messages';
 
+import { AutoEndFishing } from '@application/usecases/room/AutoEndFishing';
 import { CreateRoom } from '@application/usecases/room/CreateRoom';
 import { JoinRoom } from '@application/usecases/room/JoinRoom';
 import { ClaimMember } from '@application/usecases/room/ClaimMember';
@@ -16,9 +18,8 @@ import { SqliteRoomRepository } from '@infrastructure/worker/SqliteRoomRepositor
 import { SystemClock } from '@infrastructure/worker/SystemClock';
 import { CryptoIdGenerator } from '@infrastructure/worker/CryptoIdGenerator';
 import { WsBroadcaster, attachmentOf } from '@infrastructure/worker/WsBroadcaster';
-import { TtlAlarmScheduler, ttlDaysFrom } from '@infrastructure/worker/TtlAlarmScheduler';
+import { RoomLifecycleAlarm } from '@infrastructure/worker/RoomLifecycleAlarm';
 
-import type { Env } from './env';
 import { errorJson, json } from './env';
 import { toErrorResponse } from './errorMapping';
 import { parseClientMessage } from './codec';
@@ -27,7 +28,7 @@ import { cardCountsFor, roomInfoDto, snapshotDto } from './dto-builders';
 /**
  * 방 Durable Object — **Worker 쪽 Composition Root** (Design §9.2).
  *
- * 방 1개 = DO 1개. 상태·동기화·브로드캐스트·TTL 삭제가 전부 여기서 끝난다.
+ * 방 1개 = DO 1개. 상태·동기화·브로드캐스트·수명 관리가 전부 여기서 끝난다.
  * Port 구현을 여기서 조립해 UseCase에 주입한다. UseCase 자체는 클라이언트와 공유한다.
  *
  * WebSocket은 Hibernation API로 받는다 — 대기 중 과금이 거의 0이라
@@ -36,16 +37,13 @@ import { cardCountsFor, roomInfoDto, snapshotDto } from './dto-builders';
 export class RoomDurableObject {
   private readonly repo: SqliteRoomRepository;
   private readonly hub: WsBroadcaster;
-  private readonly ttl: TtlAlarmScheduler;
+  private readonly lifecycle: RoomLifecycleAlarm;
   private readonly deps: UseCaseDeps;
 
-  constructor(
-    private readonly ctx: DurableObjectState,
-    env: Env
-  ) {
+  constructor(private readonly ctx: DurableObjectState) {
     this.repo = new SqliteRoomRepository(ctx.storage.sql);
     this.hub = new WsBroadcaster(ctx);
-    this.ttl = new TtlAlarmScheduler(ctx.storage, ttlDaysFrom(env.ROOM_TTL_DAYS));
+    this.lifecycle = new RoomLifecycleAlarm(ctx.storage);
     this.deps = {
       repo: this.repo,
       clock: new SystemClock(),
@@ -98,7 +96,7 @@ export class RoomDurableObject {
       uaLabel,
     });
 
-    await this.rescheduleTtl();
+    await this.rescheduleAlarm();
     return json(result, { status: 201 });
   }
 
@@ -122,7 +120,7 @@ export class RoomDurableObject {
       uaLabel,
     });
 
-    await this.rescheduleTtl();
+    await this.rescheduleAlarm();
     this.broadcastUpdate(result.memberId);
     return json(result, { status: 201 });
   }
@@ -144,7 +142,7 @@ export class RoomDurableObject {
       confirmedOnlineConflict: body.confirmedOnlineConflict === true,
     });
 
-    await this.rescheduleTtl();
+    await this.rescheduleAlarm();
     return json(result);
   }
 
@@ -235,9 +233,14 @@ export class RoomDurableObject {
     const key = idempotencyKeyOf(message);
     if (key !== null) this.hub.send(ws, { t: 'ack', id: key });
 
+    // 상태가 바뀌면 다음 마감도 바뀐다 (낚시 3일 ↔ 종료 후 7일)
+    if (result.kind === 'end' || result.kind === 'resume') {
+      void this.rescheduleAlarm();
+    }
+
     switch (result.kind) {
       case 'end':
-        this.hub.broadcast({ t: 'ended', endedAt: result.endedAt });
+        this.hub.broadcast({ t: 'ended', endedAt: result.endedAt, auto: false });
         break;
       case 'resume':
         this.hub.broadcast({ t: 'resumed' });
@@ -264,17 +267,32 @@ export class RoomDurableObject {
 
   // ── 알람 (TTL) ──
 
+  /**
+   * 방 수명 알람 — 자동 종료와 삭제를 한 진입점에서 처리한다 (Plan FR-30~33).
+   *
+   * 알람이 울린 이유를 저장해 두지 않는다. 대신 방의 현재 상태를 보고 "지금 뭘
+   * 해야 하는지"를 매번 다시 판정한다 — 그사이 방장이 종료·재개를 눌러 상태가
+   * 바뀌었을 수 있기 때문이다. 아무 조건에도 걸리지 않으면 다음 마감으로 다시 건다.
+   */
   async alarm(): Promise<void> {
     const room = this.repo.getRoom();
     if (room === null) return;
 
-    if (this.ttl.isExpired(room.lastActivityAt, Date.now())) {
-      // Plan FR-30 — 마지막 활동 후 7일. 개인정보 최소화 (Design §7)
+    // ① 종료 후 7일 — 데이터를 지운다 (Plan FR-33, 개인정보 최소화 Design §7)
+    if (isPurgeable(room, Date.now())) {
       this.repo.deleteAll();
       return;
     }
-    // 그사이 활동이 있었다 — 만료 시각을 뒤로 민다
-    await this.ttl.schedule(room.lastActivityAt);
+
+    // ② 낚시 3일 초과 — 자동으로 종료시킨다 (Plan FR-31)
+    const auto = new AutoEndFishing(this.deps).execute();
+    if (auto.ended && auto.endedAt !== null) {
+      this.hub.broadcast({ t: 'ended', endedAt: auto.endedAt, auto: true });
+      this.broadcastUpdate(null);
+    }
+
+    // ③ 다음 마감(자동 종료 → 삭제)으로 알람을 다시 건다
+    await this.rescheduleAlarm();
   }
 
   // ── 내부 헬퍼 ──
@@ -321,8 +339,8 @@ export class RoomDurableObject {
     });
   }
 
-  private async rescheduleTtl(): Promise<void> {
+  private async rescheduleAlarm(): Promise<void> {
     const room = this.repo.getRoom();
-    if (room !== null) await this.ttl.schedule(room.lastActivityAt);
+    if (room !== null) await this.lifecycle.schedule(room);
   }
 }

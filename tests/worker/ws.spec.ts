@@ -6,6 +6,8 @@ import type {
   SnapshotMessage,
   UpdateMessage,
 } from '@application/dto/ws-messages';
+import { env, runInDurableObject } from 'cloudflare:test';
+import { SqliteRoomRepository } from '@infrastructure/worker/SqliteRoomRepository';
 import { TestClient, closeAllSockets, createRoom } from './helpers';
 
 afterEach(closeAllSockets);
@@ -180,6 +182,35 @@ describe('WebSocket', () => {
     const ack = await hostWs.next<AckMessage>((m) => m.t === 'ack' && m.id === 'evt-fix');
 
     expect(ack.id).toBe('evt-fix');
+    hostWs.close();
+    guestWs.close();
+  });
+
+  it('정정 창(24h)이 지나면 재개가 거부된다 (FR-32)', async () => {
+    const { hostWs, guestWs, room } = await room2();
+
+    hostWs.send({ t: 'end' });
+    await hostWs.ofType('ended');
+
+    // 종료를 25시간 전으로 밀어 정정 창을 넘긴다
+    const stub = env.ROOM_DO.get(env.ROOM_DO.idFromName(room.code));
+    await runInDurableObject(stub, (_instance, state) => {
+      new SqliteRoomRepository(state.storage.sql).setRoomStatus(
+        'ended',
+        Date.now() - 25 * 3_600_000
+      );
+    });
+
+    hostWs.send({ t: 'resume' });
+    const error = await hostWs.next<ErrorMessage>((m) => m.t === 'error');
+
+    expect(error.code).toBe('ROOM_ARCHIVED');
+
+    // 그래도 결과는 볼 수 있다 — 스냅샷은 정상으로 온다 (FR-33)
+    guestWs.send({ t: 'hello' });
+    const snapshot = await guestWs.ofType('snapshot');
+    expect(snapshot.t).toBe('snapshot');
+
     hostWs.close();
     guestWs.close();
   });

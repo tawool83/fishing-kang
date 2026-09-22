@@ -3,7 +3,6 @@ export interface Env {
   /** 정적 자산. 테스트 환경에는 없을 수 있다 */
   ASSETS?: Fetcher;
   APP_ORIGIN?: string;
-  ROOM_TTL_DAYS?: string;
   COOLDOWN_MS?: string;
 }
 

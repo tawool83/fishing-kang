@@ -146,7 +146,6 @@ export function CatchBoard({ code }: { code: string }) {
                   ranking={ranking}
                   myMemberId={me}
                   hostMemberId={room.hostMemberId}
-                  phonelessIds={store.phonelessIds.value}
                   {...(store.isHost.value && !isEnded
                     ? {
                         onProxy: (memberId: MemberId) => {
@@ -167,6 +166,7 @@ export function CatchBoard({ code }: { code: string }) {
             code={code}
             isEnded={isEnded}
             isHost={store.isHost.value}
+            canResume={store.canResume(now)}
             // 종료/재개될 때마다 다시 불러온다
             refreshKey={isEnded ? 1 : 0}
             onResume={() => {

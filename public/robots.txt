@@ -1,0 +1,10 @@
+# Plan §9 / Design §7 — 방 페이지는 검색에 노출하지 않는다.
+#
+# 다만 그 거부를 여기서 하면 안 된다. 크롤러를 robots.txt로 막으면 단톡방 링크
+# 미리보기를 만드는 스크래퍼(카카오·라인·슬랙)까지 같이 막혀 카드가 안 뜬다.
+# 색인 거부는 noindex로 한다 — index.html의 <meta name="robots">와,
+# /r/* 응답의 X-Robots-Tag 헤더(src/presentation/worker/index.ts).
+#
+# 이 파일이 없으면 SPA 폴백이 /robots.txt 자리에 index.html을 200으로 돌려준다.
+User-agent: *
+Allow: /

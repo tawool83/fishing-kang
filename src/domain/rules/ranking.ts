@@ -112,6 +112,20 @@ export function podium(ranking: readonly RankEntry[]): Podium {
   };
 }
 
+/**
+ * 포디움 구성의 지문 (Plan FR-34).
+ *
+ * 금·은·동에 **누가 서 있는지**만 뽑는다. 마릿수는 넣지 않는다 —
+ * 1위가 계속 잡아 격차만 벌어지는 건 순위 변동이 아니기 때문이다.
+ * 공동 수상자는 rankTotals가 이름·id 순으로 정렬해 주므로 순서가 흔들리지 않는다.
+ *
+ * 두 시점의 지문이 다르면 시상대가 바뀐 것이다 → 종을 친다.
+ */
+export function podiumKey(p: Podium): string {
+  const tier = (entries: readonly RankEntry[]) => entries.map((e) => e.memberId).join(',');
+  return `${tier(p.gold)}|${tier(p.silver)}|${tier(p.bronze)}`;
+}
+
 export function findRank(ranking: readonly RankEntry[], memberId: MemberId): RankEntry | null {
   return ranking.find((e) => e.memberId === memberId) ?? null;
 }

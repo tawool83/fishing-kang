@@ -118,6 +118,27 @@ Design §5.4 ⑥은 "역전 드라마 확인용"이라고만 적어 축을 요�
 
 ---
 
+## 1-6. 단톡방 링크 미리보기 (OG 카드) — **2026-09-22 적용됨**
+
+링크를 단톡방에 붙이면 제목 없는 맨 URL로 떴다. `index.html` 에 기본 카드를 박고,
+초대 링크(`/r/:CODE`)에서만 워커가 문구를 초대장으로 덮어쓴다.
+
+| 파일 | 역할 |
+|---|---|
+| `src/presentation/client/index.html` | 기본 og:*/twitter:* — 홈 카드 |
+| `src/presentation/worker/og.ts` | `/r/:CODE` 에서 바꿀 값 (`Map`). 그 외 경로는 `null` → 리라이터를 아예 안 태운다 |
+| `src/presentation/worker/index.ts` | `HTMLRewriter` 로 `<meta content>` 만 교체 |
+| `public/og.png` | 1200×630 카드. 원본 `scripts/og-card.html`, 재생성 `pnpm build:og` |
+
+**왜 홈 카드를 워커가 안 만드나** — Workers Assets는 실제 파일이 있는 경로(`/`, `/og.png`)를
+워커를 거치지 않고 내보낸다 (Plan §7.2 "정적 요청은 무료"의 이면). `/r/:CODE` 는 파일이 없어
+SPA 폴백으로 워커를 타므로 거기서만 손댈 수 있다.
+
+**방 이름은 싣지 않는다** — 사용자가 적은 문자열이고 스크래퍼 캐시에 남는데, 링크를 받는 쪽은
+이미 어느 단톡방인지 안다 (Plan §9). 덕분에 카드가 방과 무관해져 스크랩 요청이 DO를 깨우지 않는다.
+
+---
+
 ## 2. Check 단계에서 남긴 갭
 
 전체 목록과 근거는 `docs/03-analysis/gangtaegong.analysis.md` §5, §10.6 참고.
@@ -128,6 +149,7 @@ Design §5.4 ⑥은 "역전 드라마 확인용"이라고만 적어 축을 요�
 |---|---|
 | **M4 필드 테스트** | 실제 낚시터에서 지인 2~3명과 실전. 비행기 모드 on/off로 대기열 검증. **Plan DoD의 마지막 미충족 항목이며 자동화 불가** |
 | Lighthouse 측정 | Plan §4.2 Quality Criteria. 모바일 Performance/Accessibility 90+ 목표 |
+| **OG 카드 실물 확인** | 배포 후 단톡방에 `https://fish.allegru.dev/r/<코드>` 를 붙여 카드가 뜨는지 본다. 카톡은 스크랩 결과를 캐시하므로 문구를 고쳤으면 [카카오 개발자 도구](https://developers.kakao.com/tool/clear/og)에서 캐시를 지운다. 2026-09-22 추가 |
 
 ### 코드 작업 (Important, 미수정)
 
@@ -143,7 +165,8 @@ Design §5.4 ⑥은 "역전 드라마 확인용"이라고만 적어 축을 요�
 | 항목 | 사유 |
 |---|---|
 | QR 카드 (§5.4 ②⑤) | 2026-09-21 보류 결정. 설계 문서에 취소선으로 명시됨. 되살리려면 `qrcode-generator`급 소형 라이브러리(gzip ~5KB) 권장 — QR은 Reed-Solomon 오류정정이 들어가 직접 구현 시 스캔 안 되는 코드가 나올 수 있다 |
-| 결과 카드 공유 (US-09) | Plan에서 P1로 범위 외. 현재 버튼 비활성 |
+| 결과 카드 공유 (US-09) | Plan에서 P1로 범위 외. 현재 버튼 비활성. 착수하면 Canvas로 카드를 그려 `navigator.share({files})` 로 넘기는 쪽이 싸다 — 카카오 SDK는 이미지가 **URL**이어야 해서 R2 업로드가 따라붙는다 |
+| 카카오 JS SDK 공유 | 2026-09-22 검토 후 보류. `Kakao.Share.sendDefault()` 는 로그인·심사 없이 쓸 수 있지만(JS키 + 플랫폼 도메인 등록이면 끝), OG 카드 대비 더 주는 건 "카톡 전용 카드 UI"와 데스크톱 공유뿐이다. 외부 스크립트 ~100KB는 gzip 150KB 예산(Plan NFR)에 비해 비싸다 |
 
 ### 문서 작업
 

@@ -114,8 +114,9 @@ test('#10 어종 추가 시트가 방 사전을 자동완성한다 (FR-07)', asy
   const guest = await joinRoomViaUi(browser, code, '철수');
   await guest.getByRole('button', { name: '+ 어종 추가' }).click();
 
-  // 방장이 만든 "우럭"이 사전에 보인다
-  await expect(guest.getByRole('button', { name: /우럭/ })).toBeVisible();
+  // 2026-09-23 — 어종은 방 전원에게 깔린다. 사전에는 보이되 "이미 내 카드"로 잠긴다
+  const sheet = guest.getByRole('dialog');
+  await expect(sheet.getByRole('button', { name: /우럭 이미 내 카드에 있어요/ })).toBeVisible();
 
   // "우 럭"을 치면 같은 어종으로 합쳐진다 — 새로 만들기 항목이 뜨지 않는다
   await guest.getByLabel('어종 이름').fill('우 럭');
@@ -184,6 +185,27 @@ test('#14 방 정보 시트의 방장 메뉴는 방장에게만 보인다', asyn
   await expect(guest.getByText('방장 메뉴')).toHaveCount(0);
 });
 
+test('#14-1 순위 종소리를 끄고 켤 수 있고 선택이 기억된다 (FR-34)', async ({ page }) => {
+  const code = await createRoomViaUi(page);
+
+  await page.getByLabel('방 정보').click();
+  const toggle = page.getByRole('button', { name: /순위가 바뀌면 종소리/ });
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true'); // 기본은 켜짐
+
+  await toggle.click();
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.getByText('종소리 꺼짐')).toBeVisible();
+
+  // 새로고침해도 꺼진 채로 남는다 — 기기에 저장되기 때문이다
+  await page.reload();
+  await page.waitForURL(`**/room/${code}`);
+  await page.getByLabel('방 정보').click();
+  await expect(page.getByRole('button', { name: /순위가 바뀌면 종소리/ })).toHaveAttribute(
+    'aria-pressed',
+    'false'
+  );
+});
+
 test('#15 방장이 폰 없는 참여자를 추가하면 순위에 나온다 (FR-24)', async ({ page }) => {
   await createRoomViaUi(page);
 
@@ -195,7 +217,8 @@ test('#15 방장이 폰 없는 참여자를 추가하면 순위에 나온다 (FR
   await page.getByRole('button', { name: /내 조과/ }).click();
   const ranks = page.getByRole('list', { name: '전체 순위' });
   await expect(ranks.getByText('철수아들')).toBeVisible();
-  await expect(ranks.getByText('폰 없음')).toBeVisible();
+  // 2026-09-23 — 순위표에서는 "폰 없음"을 떼어냈다. 방 정보 시트에는 그대로 있다
+  await expect(ranks.getByText('폰 없음')).toHaveCount(0);
 });
 
 test('#16 방장이 종료하면 모두의 입력이 잠긴다 (FR-17)', async ({ page, browser }) => {
@@ -233,9 +256,7 @@ test('#17 연결 상태 알약이 상세를 펼친다 (FR-20)', async ({ page })
  * C2(FR-08 도달 불가), I1(접속 점 하드코딩), I2(기기 수 미표시),
  * I4(공동 순위 비가시)가 화면에서 실제로 해소됐는지 확인한다.
  */
-test('#18 0마리 카드는 삭제, 기록 있는 카드는 숨기기만 된다 (갭 C2 / FR-08)', async ({
-  page,
-}) => {
+test('#18 0마리 카드는 삭제, 기록 있는 카드는 숨기기만 된다 (갭 C2 / FR-08)', async ({ page }) => {
   await createRoomViaUi(page);
   await addSpecies(page, '우럭');
   await addSpecies(page, '광어');
@@ -296,4 +317,30 @@ test('#20 동점이면 "공동" 배지가 눈에 보인다 (갭 I4 / FR-14)', as
 
   // sr-only가 아니라 실제로 보이는 배지여야 한다
   await expect(page.getByText('공동').first()).toBeVisible();
+});
+
+test('#21 한 명이 어종을 추가하면 다른 사람 화면에도 바로 뜬다', async ({ page, browser }) => {
+  const code = await createRoomViaUi(page);
+  const guest = await joinRoomViaUi(browser, code, '철수');
+
+  // 철수는 아직 아무 카드도 없다
+  await expect(guest.getByLabel('우럭 한 마리 추가')).toHaveCount(0);
+
+  await addSpecies(page, '우럭');
+
+  // 철수가 아무것도 안 했는데 카드가 생기고, 바로 누를 수 있어야 한다
+  await expect(guest.getByLabel('우럭 한 마리 추가')).toBeVisible({ timeout: 3000 });
+  await guest.getByLabel('우럭 한 마리 추가').click();
+  await expect(guest.getByLabel(/^우럭 \d+마리$/)).toContainText('1');
+});
+
+test('#22 늦게 들어온 사람도 방에 있던 어종을 전부 본다', async ({ page, browser }) => {
+  const code = await createRoomViaUi(page);
+  await addSpecies(page, '우럭');
+  await addSpecies(page, '광어');
+
+  const late = await joinRoomViaUi(browser, code, '영희');
+
+  await expect(late.getByLabel('우럭 한 마리 추가')).toBeVisible();
+  await expect(late.getByLabel('광어 한 마리 추가')).toBeVisible();
 });

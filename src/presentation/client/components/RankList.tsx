@@ -7,7 +7,6 @@ interface Props {
   ranking: RankEntry[];
   myMemberId: MemberId | null;
   hostMemberId: string;
-  phonelessIds: ReadonlySet<MemberId>;
   /** 방장일 때만 전달된다 — 대리 입력 진입점 (Plan FR-21) */
   onProxy?: (memberId: MemberId) => void;
 }
@@ -26,13 +25,7 @@ const FLIP_MS = 250;
  * 경쟁의 재미가 이 서비스의 존재 이유라(Plan WHY), 순위가 소리 없이 바뀌면
  * 가장 중요한 순간을 놓친다.
  */
-export function RankList({
-  ranking,
-  myMemberId,
-  hostMemberId,
-  phonelessIds,
-  onProxy,
-}: Props) {
+export function RankList({ ranking, myMemberId, hostMemberId, onProxy }: Props) {
   const max = Math.max(1, ...ranking.map((r) => r.total));
   const rows = useRef(new Map<MemberId, HTMLLIElement>());
   const lastTop = useRef(new Map<MemberId, number>());
@@ -93,7 +86,6 @@ export function RankList({
               {entry.tied && <span class="ranks__tied">공동</span>}
               {entry.displayName}
               {entry.memberId === hostMemberId && <span class="ranks__tag">방장</span>}
-              {phonelessIds.has(entry.memberId) && <span class="ranks__tag">폰 없음</span>}
             </span>
 
             <span class="ranks__bar" aria-hidden="true">
